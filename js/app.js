@@ -193,6 +193,7 @@ if (form) {
     c_img: yes('c_img'), c_news: yes('c_news'),
     consents: 'tutor+privacidad ' + new Date().toISOString() + (($('c_terms').checked && $('c_med').checked) ? ' · condiciones+atención médica' : ''),
     pay: payMethod() === 'card' ? 'Tarjeta (Stripe)' : 'Transferencia',
+    lang: document.documentElement.lang,
     source: source()
   } : { source: source() };
 

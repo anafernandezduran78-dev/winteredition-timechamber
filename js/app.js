@@ -66,13 +66,13 @@ function track(name, params){ if (T.ga4) gtag('event', name, params || {}); stat
 let cookieChoice = null;
 try { cookieChoice = localStorage.getItem('tc_cookies'); } catch (e) {}
 if (T.ga4) {
-  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+  // Si ya aceptó en otra visita, el consentimiento va ANTES del config (si no, el page_view sale como «denegado»).
+  gtag('consent', 'default', { analytics_storage: cookieChoice === 'yes' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
   gtag('js', new Date());
   gtag('config', T.ga4, { anonymize_ip: true });
   const gs = document.createElement('script');
   gs.async = true; gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + T.ga4;
   document.head.appendChild(gs);
-  if (cookieChoice === 'yes') gtag('consent', 'update', { analytics_storage: 'granted' });
 }
 
 // ----- Instagram reels: real embeds, loaded only after consent (banner "accept" or the button)
@@ -99,7 +99,7 @@ if (embedBtn) {
 const cookieBox = $('cookie');
 if (cookieBox && !T.noembed && (T.ga4 || embedBtn)) {
   const decide = ok => {
-    if (ok && T.ga4) gtag('consent', 'update', { analytics_storage: 'granted' });
+    if (ok && T.ga4) { gtag('consent', 'update', { analytics_storage: 'granted' }); gtag('event', 'page_view'); }
     try { localStorage.setItem('tc_cookies', ok ? 'yes' : 'no'); } catch (e) {}
     cookieBox.hidden = true;
     if (ok) embedReels();

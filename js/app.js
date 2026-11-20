@@ -70,9 +70,18 @@ if (T.ga4) {
   gtag('consent', 'default', { analytics_storage: cookieChoice === 'yes' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
   gtag('js', new Date());
   gtag('config', T.ga4, { anonymize_ip: true });
-  const gs = document.createElement('script');
-  gs.async = true; gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + T.ga4;
-  document.head.appendChild(gs);
+  // Load gtag.js only after the page has painted (first interaction or ~2.5 s after load):
+  // the queued dataLayer commands above are sent as soon as it arrives, so no data is lost.
+  let gaLoaded = false;
+  const loadGA = () => {
+    if (gaLoaded) return; gaLoaded = true;
+    const gs = document.createElement('script');
+    gs.async = true; gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + T.ga4;
+    document.head.appendChild(gs);
+  };
+  ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(ev => addEventListener(ev, loadGA, { once: true, passive: true }));
+  const later = () => setTimeout(loadGA, 2500);
+  if (document.readyState === 'complete') later(); else addEventListener('load', later, { once: true });
 }
 
 // ----- Instagram reels: real embeds, loaded only after consent (banner "accept" or the button)

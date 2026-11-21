@@ -200,7 +200,7 @@
 
   /* Scripts without Latin glyphs in Anton / Black Ops One */
   :lang(ru){--display:'Oswald','Anton',Impact,sans-serif;--stencil:'Russo One','Black Ops One',Impact,sans-serif}
-  :lang(zh){--display:'Noto Sans SC','Anton',sans-serif;--stencil:'Noto Sans SC','Black Ops One',sans-serif;--text:'Inter','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',system-ui,sans-serif}
+  :lang(zh){--display:'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC','Noto Sans SC','Anton',sans-serif;--stencil:'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC','Noto Sans SC','Black Ops One',sans-serif;--text:'Inter','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans CJK SC','Noto Sans SC',system-ui,sans-serif}
   :lang(zh) h1,:lang(zh) h2,:lang(zh) h3{font-weight:900;letter-spacing:.02em;line-height:1.15}
   .mega{font-family:'Anton',Impact,sans-serif!important}
   .langs{display:flex;gap:2px;margin-right:6px}

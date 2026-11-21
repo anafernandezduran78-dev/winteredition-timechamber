@@ -207,7 +207,7 @@ if (form) {
     level: v('level'), shirt: v('shirt'), week: selectedWeek().value, total: totalEl.textContent,
     gname: v('gname'), email: v('email'), phone: v('phone'), pickup: v('pickup'), c_alone: yes('c_alone'),
     health: $('c_health').checked ? v('health') : '', c_health: yes('c_health'),
-    c_img: yes('c_img'), c_news: yes('c_news'),
+    c_img: yes('c_img'), c_news: $('c_nonews').checked ? 'No' : 'Sí',   // incluida por defecto (art. 21.2 LSSI); casilla = baja
     consents: 'tutor+privacidad ' + new Date().toISOString() + (($('c_terms').checked && $('c_med').checked) ? ' · condiciones+atención médica' : ''),
     pay: payMethod() === 'card' ? 'Tarjeta (Stripe)' : 'Transferencia',
     lang: document.documentElement.lang,

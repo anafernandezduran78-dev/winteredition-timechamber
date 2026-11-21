@@ -157,6 +157,10 @@ if (reviewForm) {
   });
 }
 
+// ----- discount notice and code: switched off automatically after T.promo_until
+const promoOn = () => !!T.promo && (!T.promo_until || Date.now() < Date.parse(T.promo_until));
+if (!promoOn()) document.querySelectorAll('.promo').forEach(el => el.hidden = true);
+
 // ----- registration form (sign-up page only)
 const form = $('campusForm');
 if (form) {
@@ -169,6 +173,10 @@ if (form) {
     form.querySelectorAll('.pay-total').forEach(el => el.textContent = totalEl.textContent);
   };
   form.querySelectorAll('input[name=week]').forEach(r => r.addEventListener('change', updateTotal));
+  // «Reservar y pagar» buttons arrive with ?semana=w1|w2|both: preselect that week
+  const wantWeek = new URLSearchParams(location.search).get('semana');
+  const wantEl = wantWeek && form.querySelector('input[name=week][data-key="' + wantWeek.replace(/[^\w]/g, '') + '"]');
+  if (wantEl) wantEl.checked = true;
   updateTotal();
   const show = (cls, text) => { msg.className = 'msg ' + cls; msg.textContent = text; };
 
@@ -267,6 +275,7 @@ if (form) {
     const body = new URLSearchParams();
     for (const [k, entry] of Object.entries(GOOGLE_FORM.fields)) body.append(entry, data[k] ?? '');
     const btn = $('submitBtn');
+    let redirecting = false;
     btn.disabled = true; btn.textContent = T.msg_sending;
     try {
       // Google Forms no devuelve CORS: no-cors envía igualmente; no podemos leer la respuesta.
@@ -277,11 +286,21 @@ if (form) {
       await sendLead('complete', false, method === 'transfer' && receiptEl.files[0] ? await readReceipt() : null);
       const cardUrl = method === 'card' && (T.card_links || {})[weekKey];
       if (cardUrl) {
-        const q = new URLSearchParams({ client_reference_id: sessionId });
+        // client_reference_id = the same sessionId stored in the «Christmas Work · Inscripciones» sheet
+        const q = new URLSearchParams();
+        if (promoOn()) q.set('prefilled_promo_code', T.promo);
         if (/@/.test(data.email || '')) q.set('prefilled_email', data.email);
+        q.set('client_reference_id', sessionId);
         q.set('locale', ({ es: 'es', ca: 'es', en: 'en', fr: 'fr', ru: 'auto', 'zh-Hans': 'zh' })[document.documentElement.lang] || 'auto');
+        const payUrl = cardUrl + '?' + q.toString();
+        track('generate_lead', { currency: 'EUR', value: PRICES[weekKey], week: data.week, method: 'card' });
         show('ok', T.card_redirect);
-        location.href = cardUrl + '?' + q.toString();
+        const go = document.createElement('a');
+        go.className = 'btn btn-cream'; go.href = payUrl; go.textContent = T.go_pay;
+        msg.appendChild(document.createElement('br')); msg.appendChild(go);
+        btn.textContent = T.msg_sending;
+        redirecting = true;
+        setTimeout(() => { location.href = payUrl; }, 2000);
         return;
       }
       track('generate_lead', { currency: 'EUR', value: PRICES[selectedWeek().dataset.key], week: data.week });
@@ -291,7 +310,7 @@ if (form) {
     } catch (err) {
       show('err', T.msg_err);
     } finally {
-      btn.disabled = !accepted(); btn.textContent = T.submit;
+      if (!redirecting) { btn.disabled = !accepted(); btn.textContent = T.submit; }
     }
   });
 }

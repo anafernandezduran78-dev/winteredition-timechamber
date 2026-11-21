@@ -153,6 +153,7 @@
           <label class="opt"><input type="radio" name="week" value="Las 2 semanas" data-key="both"><span><b>Les 2 semaines</b><span>Tarif réduit</span></span></label>
         </div>
         <div class="total"><span>Total</span><b id="total"></b></div>
+        <p class="promo" data-until="2026-11-30T00:00:00+01:00">-10 % pour les 15 premières places avec le code NAVIDAD (déjà appliqué au paiement), jusqu&#x27;au 29/11.</p>
       </fieldset>
 
       <fieldset>
@@ -170,7 +171,7 @@
 
       <fieldset>
         <legend>Paiement</legend>
-        
+        <div class="pick paymeth"><label class="opt"><input type="radio" name="paymeth" value="transfer"><span><b>Virement bancaire</b><span>Vous joignez le justificatif ici</span></span></label><label class="opt"><input type="radio" name="paymeth" value="card" checked><span><b>Carte bancaire</b><span>Paiement sécurisé avec Stripe</span></span></label></div>
         <div id="payTransfer">
         <p class="paybox">Faites un virement de <b class="pay-total"></b> sur le compte <b class="sel">ES51 2100 3683 5822 0013 5544</b> (titulaire : TIMECHAMBER S.L.). Libellé : nom et prénom du joueur ou de la joueuse + « Christmas Work ».</p>
         <div class="field full"><label for="receipt">Justificatif du virement (image ou PDF, 5 Mo max.)</label><input type="file" id="receipt" accept="image/*,application/pdf" required><p class="hint">La place est confirmée une fois le paiement vérifié par Time Chamber.</p></div>
@@ -208,6 +209,7 @@
         <div class="days"><span class="day">22</span><span class="day">23</span><span class="day">24</span></div>
         <p>Du mardi au jeudi. Trois matinées pour affiner les fondamentaux avant Noël.</p>
         <div class="price"><b>96 €</b><span>· 09:00 – 13:00</span></div>
+        <a class="btn btn-red" href="../../fr/inscription/?semana=w1#inscripcion">Réserver et payer</a>
       </article>
       <article class="week">
         <div class="n">02</div>
@@ -216,12 +218,14 @@
         <div class="days"><span class="day">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span></div>
         <p>Du lundi au jeudi. Quatre matinées pour finir l&#x27;année sur le terrain.</p>
         <div class="price"><b>128 €</b><span>· 09:00 – 13:00</span></div>
+        <a class="btn btn-red" href="../../fr/inscription/?semana=w2#inscripcion">Réserver et payer</a>
       </article>
     </div>
     <div class="combo">
       <p>Les deux semaines (7 jours) : <b>179 €</b></p>
-      <a class="btn btn-cream" href="../../fr/inscription/">Je m&#x27;inscris</a>
+      <a class="btn btn-cream" href="../../fr/inscription/?semana=both#inscripcion">Réserver et payer</a>
     </div>
+    <p class="promo" data-until="2026-11-30T00:00:00+01:00">-10 % pour les 15 premières places avec le code NAVIDAD (déjà appliqué au paiement), jusqu&#x27;au 29/11.</p>
   </div>
 </section><section id="faq">
   <div class="wrap" style="max-width:820px">
@@ -274,7 +278,7 @@
   <p>Nous utilisons des cookies d&#x27;analyse et, si vous les affichez, les vidéos Instagram intégrées déposent les leurs. Vous pouvez les accepter ou les refuser.</p>
   <div><button type="button" class="btn btn-cream" id="ckNo">Refuser</button><button type="button" class="btn btn-red" id="ckOk">Accepter</button></div>
 </div>
-<script id="i18n" type="application/json">{"price_fmt": "{n} €", "msg_notconn": "Le formulaire n'est pas encore connecté. Écrivez-nous sur WhatsApp au +34 666 095 447.", "msg_sending": "Envoi…", "msg_ok": "🎄 Inscription reçue ! Nous vous contacterons pour confirmer la place.", "msg_err": "L'envoi a échoué. Vérifiez votre connexion ou écrivez-nous sur WhatsApp au +34 666 095 447.", "submit": "Envoyer l'inscription", "gate_msg": "Pour commencer, cochez les deux cases de « Avant de commencer ».", "r_ok": "Merci ! Nous avons bien reçu votre avis. Nous le vérifions avant de le publier.", "r_submit": "Envoyer l'avis", "receipt_err": "Le justificatif doit être une image ou un PDF de 5 Mo maximum.", "card_redirect": "Inscription reçue. Redirection vers le paiement par carte…", "card_links": {}, "ga4": "G-0P8RHYKZD2", "prices": {"w1": 96, "w2": 128, "both": 179}, "noembed": false}</script>
+<script id="i18n" type="application/json">{"price_fmt": "{n} €", "msg_notconn": "Le formulaire n'est pas encore connecté. Écrivez-nous sur WhatsApp au +34 666 095 447.", "msg_sending": "Envoi…", "msg_ok": "🎄 Inscription reçue ! Nous vous contacterons pour confirmer la place.", "msg_err": "L'envoi a échoué. Vérifiez votre connexion ou écrivez-nous sur WhatsApp au +34 666 095 447.", "submit": "Envoyer l'inscription", "gate_msg": "Pour commencer, cochez les deux cases de « Avant de commencer ».", "r_ok": "Merci ! Nous avons bien reçu votre avis. Nous le vérifions avant de le publier.", "r_submit": "Envoyer l'avis", "receipt_err": "Le justificatif doit être une image ou un PDF de 5 Mo maximum.", "card_redirect": "Inscription reçue ! Nous vous redirigeons vers le paiement pour confirmer la place…", "go_pay": "Aller au paiement", "card_links": {"w1": "https://buy.stripe.com/9B67sM4Um17J4rg7aK6wF02", "w2": "https://buy.stripe.com/aFa28s0E69Ef0b00Mm6wF03", "both": "https://buy.stripe.com/fZu5kEgD49Ef5vk8eO6wF04"}, "promo": "NAVIDAD", "promo_until": "2026-11-30T00:00:00+01:00", "ga4": "G-0P8RHYKZD2", "prices": {"w1": 96, "w2": 128, "both": 179}, "noembed": false}</script>
 <script src="../../js/app.js"></script>
 </body>
 </html>

@@ -62,16 +62,17 @@ const statSend = (type, extra) => {
   else fetch(LEADS.endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: payload, keepalive: true }).catch(() => {});
 };
 statSend('visit');
-function track(name, params){ if (T.ga4) gtag('event', name, params || {}); statSend('event', { name }); }
 let cookieChoice = null;
 try { cookieChoice = localStorage.getItem('tc_cookies'); } catch (e) {}
-if (T.ga4) {
-  // Si ya aceptó en otra visita, el consentimiento va ANTES del config (si no, el page_view sale como «denegado»).
-  gtag('consent', 'default', { analytics_storage: cookieChoice === 'yes' ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+// Google Analytics SOLO con consentimiento: sin «Aceptar» no se carga gtag.js ni se envía nada a Google
+// (ni siquiera pings sin cookies). Las estadísticas propias (statSend) no usan cookies ni datos personales.
+let gaOn = false;
+function track(name, params){ if (gaOn) gtag('event', name, params || {}); statSend('event', { name }); }
+function startGA(afterPaint) {
+  if (!T.ga4 || gaOn) return; gaOn = true;
+  gtag('consent', 'default', { analytics_storage: 'granted', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
   gtag('js', new Date());
-  gtag('config', T.ga4, { anonymize_ip: true });
-  // Load gtag.js only after the page has painted (first interaction or ~2.5 s after load):
-  // the queued dataLayer commands above are sent as soon as it arrives, so no data is lost.
+  gtag('config', T.ga4, { anonymize_ip: true });        // envía el page_view
   let gaLoaded = false;
   const loadGA = () => {
     if (gaLoaded) return; gaLoaded = true;
@@ -79,9 +80,23 @@ if (T.ga4) {
     gs.async = true; gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + T.ga4;
     document.head.appendChild(gs);
   };
+  if (!afterPaint) return loadGA();
+  // Visita con consentimiento previo: se carga tras pintar la página (primera interacción o ~2,5 s) para no frenarla.
   ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(ev => addEventListener(ev, loadGA, { once: true, passive: true }));
   const later = () => setTimeout(loadGA, 2500);
   if (document.readyState === 'complete') later(); else addEventListener('load', later, { once: true });
+}
+if (cookieChoice === 'yes') startGA(true);
+
+// ----- Botón fijo de reserva (menú plegado): se oculta mientras ya hay otro botón de reserva en pantalla
+const bookbar = document.querySelector('.bookbar');
+if (bookbar && 'IntersectionObserver' in window) {
+  const inView = new Set();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => { if (en.isIntersecting) inView.add(en.target); else inView.delete(en.target); });
+    bookbar.classList.toggle('off', inView.size > 0);
+  }, { rootMargin: '-90px 0px -90px 0px', threshold: 0.75 });   // solo cuenta un botón bien visible (no bajo la cabecera ni tras el propio botón fijo)
+  document.querySelectorAll('main .hero-ctas a, main .week a.btn, main .combo a.btn, main .cta-mini a, main .cta-band a.btn').forEach(el => io.observe(el));
 }
 
 // ----- Instagram reels: real embeds, loaded only after consent (banner "accept" or the button)
@@ -108,7 +123,7 @@ if (embedBtn) {
 const cookieBox = $('cookie');
 if (cookieBox && !T.noembed && (T.ga4 || embedBtn)) {
   const decide = ok => {
-    if (ok && T.ga4) { gtag('consent', 'update', { analytics_storage: 'granted' }); gtag('event', 'page_view'); }
+    if (ok) startGA(false);
     try { localStorage.setItem('tc_cookies', ok ? 'yes' : 'no'); } catch (e) {}
     cookieBox.hidden = true;
     if (ok) embedReels();
